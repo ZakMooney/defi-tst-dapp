@@ -1,14 +1,15 @@
-import {
-  Button,
-} from 'react-daisyui';
 import { ethers } from "ethers";
 
 import {
   ArrowUpCircleIcon,
 } from '@heroicons/react/24/outline';
 
-import Modal from "../ui/Modal.jsx";
-import Typography from "../ui/Typography.jsx";
+import VaultHealth from "./VaultHealth";
+
+import Modal from "../ui/Modal";
+import Button from "../ui/Button";
+import Typography from "../ui/Typography";
+import Input from "../ui/Input";
 
 const RepayModal = (props) => {
   const {
@@ -16,6 +17,7 @@ const RepayModal = (props) => {
     closeModal,
     handleAmount,
     handleInputMax,
+    getInputMax,
     isPending,
     isSuccess,
     amount,
@@ -26,6 +28,7 @@ const RepayModal = (props) => {
     burnFeeRate,
     toPercentage,
     inputRef,
+    currentVault,
   } = props;
 
   if (isSuccess) {
@@ -35,10 +38,10 @@ const RepayModal = (props) => {
           open={open}
           closeModal={closeModal}
         >
-          <h2 className="card-title">
-            <ArrowUpCircleIcon className="h-6 w-6 inline-block"/>
+          <Typography variant="h2" className="card-title">
+            <ArrowUpCircleIcon className="mr-2 h-6 w-6 inline-block"/>
             Repaying EUROs
-          </h2>
+          </Typography>
 
           <Typography
             variant="h3"
@@ -66,9 +69,9 @@ const RepayModal = (props) => {
           open={open}
           closeModal={closeModal}
         >
-          <h2 className="card-title">
+          <Typography variant="h2" className="card-title">
             Confirm Your EUROs Spending cap
-          </h2>
+          </Typography>
   
           <Typography
             variant="p"
@@ -114,10 +117,10 @@ const RepayModal = (props) => {
           open={open}
           closeModal={closeModal}
         >
-          <h2 className="card-title">
-            <ArrowUpCircleIcon className="h-6 w-6 inline-block"/>
+          <Typography variant="h2" className="card-title">
+            <ArrowUpCircleIcon className="mr-2 h-6 w-6 inline-block"/>
             Confirm Your Loan Repayment
-          </h2>
+          </Typography>
   
           <Typography
             variant="p"
@@ -154,26 +157,39 @@ const RepayModal = (props) => {
         open={open}
         closeModal={closeModal}
       >
-        <h2 className="card-title">
-          <ArrowUpCircleIcon className="h-6 w-6 inline-block"/>
+        <Typography variant="h2" className="card-title">
+          <ArrowUpCircleIcon className="mr-2 h-6 w-6 inline-block"/>
           Repaying EUROs
-        </h2>
+        </Typography>
 
+        <div className="flex justify-between">
+          <Typography
+            variant="p"
+          >
+            Repay Amount
+          </Typography>
+          <Typography
+            variant="p"
+            className="text-right"
+          >
+            Remaining: {getInputMax()}
+          </Typography>
+        </div>
         <div
           className="join"
         >
-          <input
-            className="input input-bordered join-item w-full"
+          <Input
+            className="join-item w-full"
             placeholder="Amount of EUROs you want to repay"
             type="number"
-            onChange={handleAmount}
+            onChange={(e) => handleAmount(e, 'REPAY')}
             disabled={isPending}
-            ref={inputRef}
+            useRef={inputRef}
           />
 
           <Button
             className="join-item"
-            onClick={handleInputMax}
+            onClick={() => handleInputMax('REPAY')}
             disabled={isPending}
           >
             Max
@@ -181,6 +197,10 @@ const RepayModal = (props) => {
         </div>
 
         <div className="mt-4">
+          <VaultHealth currentVault={currentVault}/>
+        </div>
+
+        <div>
           {repayValues.map((item) => (
             <div
               className="flex justify-between align-center"
@@ -188,11 +208,13 @@ const RepayModal = (props) => {
             >
               <Typography
                 variant="p"
+                className="flex-1"
               >
                 {item.key}
               </Typography>
               <Typography
                 variant="p"
+                className="flex-1"
               >
                 {item.value || '0'}
               </Typography>

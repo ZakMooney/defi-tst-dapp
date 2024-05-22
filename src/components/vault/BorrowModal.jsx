@@ -1,14 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-} from 'react-daisyui';
-
+import { ethers } from "ethers";
 import {
   ArrowDownCircleIcon,
 } from '@heroicons/react/24/outline';
 
+import VaultHealth from "./VaultHealth";
+
+import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import Typography from "../ui/Typography";
+import Input from "../ui/Input";
 
 const BorrowModal = (props) => {
   const {
@@ -20,10 +21,13 @@ const BorrowModal = (props) => {
     amount,
     handleDebtAction,
     borrowValues,
-    inputRef
+    inputRef,
+    currentVault,
   } = props;
 
   const navigate = useNavigate();
+
+  const currentDebt = ethers.formatEther(currentVault.status.minted.toString());
   
   if (isSuccess) {
     return (
@@ -32,10 +36,10 @@ const BorrowModal = (props) => {
           open={open}
           closeModal={closeModal}
         >
-          <h2 className="card-title">
-            <ArrowDownCircleIcon className="h-6 w-6 inline-block"/>
+          <Typography variant="h2" className="card-title">
+            <ArrowDownCircleIcon className="mr-2 h-6 w-6 inline-block"/>
             Borrowing EUROs
-          </h2>
+          </Typography>
 
           <Typography
             variant="h3"
@@ -75,21 +79,38 @@ const BorrowModal = (props) => {
         open={open}
         closeModal={closeModal}
       >
-        <h2 className="card-title">
-          <ArrowDownCircleIcon className="h-6 w-6 inline-block"/>
+        <Typography variant="h2" className="card-title">
+          <ArrowDownCircleIcon className="mr-2 h-6 w-6 inline-block"/>
           Borrowing EUROs
-        </h2>
+        </Typography>
 
-        <input
-          className="input input-bordered w-full"
+        <div className="flex justify-between">
+          <Typography
+            variant="p"
+          >
+            Borrow Amount
+          </Typography>
+          <Typography
+            variant="p"
+            className="text-right"
+          >
+            Current Debt: {currentDebt}
+          </Typography>
+        </div>
+        <Input
+          className="w-full"
           placeholder="Amount of EUROs to borrow"
           type="number"
-          onChange={handleAmount}
+          onChange={(e) => handleAmount(e, 'BORROW')}
           disabled={isPending}
-          ref={inputRef}
+          useRef={inputRef}
         />
 
         <div className="mt-4">
+          <VaultHealth currentVault={currentVault}/>
+        </div>
+
+        <div>
           {borrowValues.map((item) => (
             <div
               className="flex justify-between align-center"
@@ -97,11 +118,13 @@ const BorrowModal = (props) => {
             >
               <Typography
                 variant="p"
+                className="flex-1"
               >
                 {item.key}
               </Typography>
               <Typography
                 variant="p"
+                className="flex-1"
               >
                 {item.value || '0'}
               </Typography>

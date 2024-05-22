@@ -16,6 +16,7 @@ import {
   useContractAddressStore,
 } from "../../store/Store.jsx";
 
+import VaultCreate from "../../components/vaults/VaultCreate";
 import VaultList from "../../components/vaults/VaultList";
 
 const Vaults = () => {
@@ -89,10 +90,15 @@ const Vaults = () => {
 
   return (
     <main>
-      <VaultList
+      <VaultCreate
+        tokenId={tokenId}
         vaults={myVaults || []}
         vaultsLoading={isPending || false}
+      />
+      <VaultList
         tokenId={tokenId}
+        vaults={myVaults || []}
+        vaultsLoading={isPending || false}
       />
     </main>
   );

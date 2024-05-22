@@ -7,9 +7,6 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import {
-  Button,
-} from 'react-daisyui';
-import {
   ArrowDownCircleIcon,
 } from '@heroicons/react/24/outline';
 
@@ -18,7 +15,10 @@ import {
   useSmartVaultABIStore,
 } from "../../store/Store";
 
-import Modal from "../ui/Modal.jsx";
+import Modal from "../ui/Modal";
+import Button from "../ui/Button";
+import Typography from "../ui/Typography";
+import Input from "../ui/Input";
 
 const WithdrawModal = (props) => {
   const {
@@ -131,17 +131,30 @@ const WithdrawModal = (props) => {
         closeModal={closeModal}
       >
         <>
-          <h2 className="card-title">
-            <ArrowDownCircleIcon className="h-6 w-6 inline-block"/>
+          <Typography variant="h2" className="card-title">
+            <ArrowDownCircleIcon className="mr-2 h-6 w-6 inline-block"/>
             Withdraw {symbol}
-          </h2>
+          </Typography>
 
+          <div className="flex justify-between">
+            <Typography
+              variant="p"
+            >
+              Withdraw Amount
+            </Typography>
+            <Typography
+              variant="p"
+              className="text-right"
+            >
+              Available: {collateralValue || ''}
+            </Typography>
+          </div>
           <div
             className="join"
           >
-            <input
-              className="input input-bordered join-item w-full"
-              ref={inputRef}
+            <Input
+              className="join-item w-full"
+              useRef={inputRef}
               type="number"
               onChange={handleAmount}
               placeholder="Amount"

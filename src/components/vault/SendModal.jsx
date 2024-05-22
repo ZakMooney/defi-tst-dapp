@@ -1,10 +1,8 @@
-import {
-  Button,
-} from 'react-daisyui';
-
-import Modal from "../ui/Modal.jsx";
-import CenterLoader from "../ui/CenterLoader.jsx";
-import Typography from "../ui/Typography.jsx";
+import Modal from "../ui/Modal";
+import CenterLoader from "../ui/CenterLoader";
+import Typography from "../ui/Typography";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
 
 const SendModal = ({
   isOpen,
@@ -26,9 +24,9 @@ const SendModal = ({
             handleCloseModal();
           }}
         >
-          <h2 className="card-title">
+          <Typography variant="h2" className="card-title">
             Delete Smart Vault
-          </h2>
+          </Typography>
           <Typography
             variant="p"
             className="mb-2"
@@ -65,24 +63,24 @@ const SendModal = ({
       >
         {isPending ? (
           <>
-            <h2 className="card-title">
+            <Typography variant="h2" className="card-title">
               {sendType === 'BURN' ? (
                 'Deleting Smart Vault'
               ) : (
                 'Transferring Smart Vault NFT'
               )}
-            </h2>
+            </Typography>
             <CenterLoader />
           </>
         ) : (
           <>
-            <h2 className="card-title">
+            <Typography variant="h2" className="card-title">
               {sendType === 'BURN' ? (
                 'Delete Smart Vault'
               ) : (
                 'Transfer Smart Vault NFT'
               )}
-            </h2>
+            </Typography>
 
             {sendType === 'BURN' ? (
               <>
@@ -120,8 +118,8 @@ const SendModal = ({
                 >
                   <b>This action is irreversible.</b>
                 </Typography>
-                <input
-                  className="input input-bordered w-full"
+                <Input
+                  className="w-full"
                   placeholder="Send To Address"
                   type="text"
                   onChange={(e) => setSendTo(e.target.value)}

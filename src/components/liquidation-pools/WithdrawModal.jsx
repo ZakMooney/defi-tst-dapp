@@ -12,13 +12,11 @@ import {
   useLiquidationPoolAbiStore
 } from "../../store/Store";
 
-import {
-  Button,
-} from 'react-daisyui';
-
 import CenterLoader from "../ui/CenterLoader";
+import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import Typography from "../ui/Typography";
+import Input from "../ui/Input";
 
 const WithdrawModal = ({
   tstAmount,
@@ -144,12 +142,12 @@ const WithdrawModal = ({
         >
           {claimLoading ? (
             <>
-              <h2 className="card-title">Withdrawing Your Tokens</h2>
+              <Typography variant="h2" className="card-title">Withdrawing Your Tokens</Typography>
               <CenterLoader />
             </>
           ) : (
             <>
-              <h2 className="card-title">Withdraw Unsuccessful</h2>
+              <Typography variant="h2" className="card-title">Withdraw Unsuccessful</Typography>
               <Typography variant="p">
                 There was a problem processing your withdraw request.
               </Typography>
@@ -187,12 +185,12 @@ const WithdrawModal = ({
         <>
           {claimLoading ? (
             <>
-              <h2 className="card-title">Withdrawing Your Tokens</h2>
+              <Typography variant="h2" className="card-title">Withdrawing Your Tokens</Typography>
               <CenterLoader />
             </>
           ) : (
             <>
-              <h2 className="card-title"> Withdraw Your Tokens</h2>
+              <Typography variant="h2" className="card-title"> Withdraw Your Tokens</Typography>
 
               {hasPending ? (
                 <>
@@ -207,7 +205,7 @@ const WithdrawModal = ({
                     <Typography variant="p">
                       Pending TST:
                     </Typography>
-                    <Typography >
+                    <Typography variant="p">
                       {showTstPending || '0'}
                     </Typography>
                   </div>
@@ -256,12 +254,12 @@ const WithdrawModal = ({
               <div
                 className="join w-full mb-4"
               >
-                <input
-                  className="input input-bordered join-item w-full"
+                <Input
+                  className="join-item w-full"
                   placeholder="TST Amount"
                   type="number"
                   onChange={handleTstAmount}
-                  ref={tstInputRef}
+                  useRef={tstInputRef}
                 />
                 <Button
                   className="join-item"
@@ -277,12 +275,12 @@ const WithdrawModal = ({
               <div
                 className="join w-full mb-4"
               >
-                <input
-                  className="input input-bordered join-item w-full"
+                <Input
+                  className="join-item w-full"
                   placeholder="EUROs Amount"
                   type="number"
                   onChange={handleEurosAmount}
-                  ref={eurosInputRef}
+                  useRef={eurosInputRef}
                 />
                 <Button
                   className="join-item"

@@ -22,13 +22,11 @@ import {
   useLiquidationPoolStore,
 } from "../../store/Store";
 
-import {
-  Button,
-} from 'react-daisyui';
-
 import Card from "../ui/Card";
+import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import Modal from "../ui/Modal";
+import Input from "../ui/Input";
 
 const Staking = () => {
   const chainId = useChainId();
@@ -268,14 +266,14 @@ const Staking = () => {
     <>
       <Card className="card-compact w-full">
         <div className="card-body">
-          <h2 className="card-title justify-between">
+          <Typography variant="h2" className="card-title justify-between">
             Deposit
 
             <Button size="sm" onClick={() => setHelpOpen(true)}>
               <QuestionMarkCircleIcon className="h-4 w-4 inline-block"/>
               How It Works
             </Button>
-          </h2>
+          </Typography>
           <Typography variant="p">
             To start earning fees & buying up liquidated assets at up to a 10% discount, stake your TST & EUROs below.
           </Typography>
@@ -287,12 +285,12 @@ const Staking = () => {
             <div
               className="join w-full mb-4"
             >
-              <input
-                className="input input-bordered join-item w-full"
+              <Input
+                className="join-item w-full"
                 placeholder="TST Amount"
                 type="number"
                 onChange={handleTstAmount}
-                ref={tstInputRef}
+                useRef={tstInputRef}
               />
               <Button
                 className="join-item"
@@ -307,12 +305,12 @@ const Staking = () => {
             <div
               className="join w-full mb-4"
             >
-              <input
-                className="input input-bordered join-item w-full"
+              <Input
+                className="join-item w-full"
                 placeholder="EUROs Amount"
                 type="number"
                 onChange={handleEurosAmount}
-                ref={eurosInputRef}
+                useRef={eurosInputRef}
               />
               <Button
                 className="join-item"
@@ -338,10 +336,10 @@ const Staking = () => {
         closeModal={() => setHelpOpen(false)}
         wide
       >
-        <h2 className="card-title">
+        <Typography variant="h2" className="card-title">
           <QuestionMarkCircleIcon className="h-6 w-6 inline-block"/>
           Liquidation Pool - How It Works
-        </h2>
+        </Typography>
 
         <Typography variant="h2">
           Earning Fees

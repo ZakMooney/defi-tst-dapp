@@ -10,9 +10,6 @@ import {
 } from "wagmi";
 import { arbitrumSepolia } from "wagmi/chains";
 import {
-  Button,
-} from 'react-daisyui';
-import {
   ArrowDownCircleIcon,
   ArrowUpCircleIcon
 } from '@heroicons/react/24/outline';
@@ -21,12 +18,15 @@ import {
   useVaultAddressStore,
   usesEuroAddressStore,
   useErc20AbiStore,
+  useVaultHealthUpdate,
 } from "../../store/Store";
 
 import smartVaultAbi from "../../abis/smartVault";
 
 import BorrowModal from "./BorrowModal";
 import RepayModal from "./RepayModal";
+
+import Button from "../ui/Button";
 
 const Debt = ({
   currentVault,
@@ -36,6 +36,10 @@ const Debt = ({
   const { arbitrumsEuroAddress, arbitrumSepoliasEuroAddress } =
     usesEuroAddressStore();
   const { erc20Abi } = useErc20AbiStore();
+  const {
+    setVaultHealthUpdateType,
+    setVaultHealthUpdateAmount,
+  } = useVaultHealthUpdate();
   const inputRef = useRef(null);
 
   const [ amount, setAmount ] = useState(BigInt(0));
@@ -74,21 +78,29 @@ const Debt = ({
   const allowance = eurosData && eurosData[0].result;
   const eurosWalletBalance = eurosData && eurosData[1].result;
 
-  const handleAmount = (e) => {
+  const handleAmount = (e, type) => {
+    setVaultHealthUpdateType(type);
     if (Number(e.target.value) < 10n ** 21n) {
-      setAmount(ethers.parseEther(e.target.value.toString()))
+      const amount = ethers.parseEther(e.target.value.toString());
+      setAmount(amount)
+      setVaultHealthUpdateAmount(amount);
     }
   };
 
-  const handleInputMax = () => {
+  const getInputMax = () => {
     const minted = currentVault?.status?.minted;
     const burnFeeRate = currentVault?.burnFeeRate;
     const maxRepayWei = eurosWalletBalance < (minted + calculateRateAmount(minted, burnFeeRate)) ?
       eurosWalletBalance * HUNDRED_PC / (HUNDRED_PC + burnFeeRate) :
       minted;
     const maxRepay = ethers.formatEther(maxRepayWei);
+    return maxRepay;
+  }
+
+  const handleInputMax = (type) => {
+    const maxRepay = getInputMax();
     inputRef.current.value = maxRepay;
-    handleAmount({target: {value: maxRepay}});
+    handleAmount({target: {value: maxRepay}}, type);
   }
 
   useEffect(() => {
@@ -134,6 +146,8 @@ const Debt = ({
     setBorrowSuccess(false);
     setRepaySuccess(false);
     setRepayStep(0);
+    setVaultHealthUpdateType('');
+    setVaultHealthUpdateAmount(0);
   }
 
   const [repayStep, setRepayStep] = useState(0);
@@ -201,12 +215,10 @@ const Debt = ({
       } else if (isSuccess) {
         setBorrowSuccess(true);
         toast.success("Borrowed Successfully");
-        inputRef.current.value = "";
         setStage('');
       } else if (isError) {
         setBorrowSuccess(false);
         toast.error('There was a problem');
-        inputRef.current.value = "";
         setStage('');
       }  
     }
@@ -215,11 +227,9 @@ const Debt = ({
         setRepayStep(1);
       } else if (isSuccess) {
         toast.success("Approved Successfully");
-        inputRef.current.value = "";
         handleBurn();
       } else if (isError) {
         toast.error('There was a problem');
-        inputRef.current.value = "";
         setStage('');
       }  
     }
@@ -230,13 +240,11 @@ const Debt = ({
       } else if (isSuccess) {
         setRepaySuccess(true);
         toast.success("Repayed Successfully");
-        inputRef.current.value = "";
         setRepayStep(1);
         setStage('');
       } else if (isError) {
         setRepaySuccess(false)
         toast.error('There was a problem');
-        inputRef.current.value = "";
         setRepayStep(1);
         setStage('');
       }
@@ -351,12 +359,14 @@ const Debt = ({
         handleDebtAction={handleDebtAction}
         borrowValues={borrowValues}
         inputRef={inputRef}
+        currentVault={currentVault}
       />
 
       <RepayModal
         open={repayOpen}
         closeModal={closeDebtModal}
         handleAmount={handleAmount}
+        getInputMax={getInputMax}
         handleInputMax={handleInputMax}
         isPending={isPending}
         isSuccess={repaySuccess}
@@ -368,6 +378,7 @@ const Debt = ({
         burnFeeRate={currentVault?.burnFeeRate}
         toPercentage={toPercentage}
         inputRef={inputRef}
+        currentVault={currentVault}
       />
     </>
   );

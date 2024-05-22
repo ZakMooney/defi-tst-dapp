@@ -3,9 +3,6 @@ import { ethers } from "ethers";
 import { useWriteContract } from "wagmi";
 import { toast } from 'react-toastify';
 import {
-  Button,
-} from 'react-daisyui';
-import {
   ArrowPathIcon,
 } from '@heroicons/react/24/outline';
 
@@ -15,18 +12,20 @@ import {
   useSmartVaultABIStore,
 } from "../../store/Store";
 
+import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import Select from "../ui/Select";
-import Modal from "../ui/Modal.jsx";
+import Modal from "../ui/Modal";
+import Input from "../ui/Input";
 
 const SwapModal = ({
   open,
   closeModal,
-
   assets,
   symbol,
   decimals,
   collateralValue,
+  tokenTotal,
 }) => {
   const [swapLoading, setSwapLoading] = useState(false);
   const [swapAssets, setSwapAssets] = useState();
@@ -130,6 +129,8 @@ const SwapModal = ({
     handleAmount({ target: { value: formatted } });
   };
 
+  const total = ethers.formatUnits(tokenTotal, decimals);
+
   if (open) {
     if (vaultStore.status.version !== 1 && vaultStore.status.version !== 2) {
       return (
@@ -139,25 +140,32 @@ const SwapModal = ({
             closeModal={closeModal}
           >
             <>
-              <h2 className="card-title">
-                <ArrowPathIcon className="h-6 w-6 inline-block"/>
+              <Typography variant="h2" className="card-title">
+                <ArrowPathIcon className="mr-2 h-6 w-6 inline-block"/>
                 Swap {symbol}
-              </h2>
+              </Typography>
 
               <div>
                 <div>
-                  <Typography
-                    variant="p"
-                    className="mb-2"
-                  >
-                    Swap Amount:
-                  </Typography>
+                  <div className="flex justify-between">
+                    <Typography
+                      variant="p"
+                    >
+                      Swap Amount
+                    </Typography>
+                    <Typography
+                      variant="p"
+                      className="text-right"
+                    >
+                      Available: {total || ''}
+                    </Typography>
+                  </div>
                   <div
                     className="join w-full mb-4"
                   >
-                    <input
-                      className="input input-bordered join-item w-full"
-                      ref={inputRef}
+                    <Input
+                      className="join-item w-full"
+                      useRef={inputRef}
                       type="number"
                       onChange={handleAmount}
                       placeholder={ symbol ? (
@@ -184,7 +192,7 @@ const SwapModal = ({
                     variant="p"
                     className="mb-2"
                   >
-                    Swap For:
+                    Swap For
                   </Typography>
                   <Select
                     id="swap-asset-select"
@@ -206,9 +214,9 @@ const SwapModal = ({
                   >
                     Min. Return:
                   </Typography>
-                  <input
-                    className="input input-bordered w-full"
-                    ref={inputReceiveRef}
+                  <Input
+                    className="w-full"
+                    useRef={inputReceiveRef}
                     type="number"
                     onChange={handleMinReturn}
                     placeholder="Amount"
@@ -253,10 +261,10 @@ const SwapModal = ({
         closeModal={closeModal}
       >
         <>
-          <h2 className="card-title">
-            <ArrowPathIcon className="h-6 w-6 inline-block"/>
+          <Typography variant="h2" className="card-title">
+            <ArrowPathIcon className="mr-2 h-6 w-6 inline-block"/>
             Swap {symbol}
-          </h2>
+          </Typography>
 
           <div>
             <Typography
