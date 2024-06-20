@@ -4,8 +4,8 @@ import {
 } from 'react-daisyui';
 import {
   CircleStackIcon,
-  BanknotesIcon,
   XMarkIcon,
+  Square3Stack3DIcon
 } from '@heroicons/react/24/outline';
 
 import Button from "./Button";
@@ -42,10 +42,10 @@ const SideNav = (props) => {
         </Menu.Item>
         <Menu.Item>
           <NavLink
-            to="/liquidation-pools"
+            to="/staking-pool"
           >
-            <BanknotesIcon className="h-6 w-6 inline-block"/>
-            Liquidation Pools
+            <Square3Stack3DIcon className="h-6 w-6 inline-block"/>
+            Staking Pool
           </NavLink>
         </Menu.Item>
       </div>
